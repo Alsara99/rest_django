@@ -3,8 +3,6 @@ from rest_framework.viewsets import ModelViewSet
 from .models import Course, Lesson
 from .serializers import CourseSerializer, LessonSerializer
 from rest_framework import generics
-from django.shortcuts import get_object_or_404
-from rest_framework.response import Response
 
 class LessonListAPIView(generics.ListCreateAPIView):
     queryset = Lesson.objects.all()

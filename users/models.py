@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from materials.models import Course, Lesson
 
 
 class User(AbstractUser):
@@ -12,7 +13,7 @@ class User(AbstractUser):
     )
     city = models.CharField(
         verbose_name="Город",
-        help_test="Укажите город"
+        help_text="Укажите город"
     )
     phone_number = models.CharField(
         max_length=35,
@@ -39,3 +40,27 @@ class User(AbstractUser):
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
         ordering = ["city", "email"]
+
+
+class Payment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateField(
+        verbose_name="Дата",
+        help_text="Укажите дату"
+    )
+    way = models.TextField(
+        verbose_name="Способ оплаты",
+        help_text="Укажите способ оплаты"
+    )
+    summ = models.IntegerField(
+        verbose_name="Сумма",
+        help_text="Укажите сумму"
+    )
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+
+
+    class Meta:
+        verbose_name = "Платеж"
+        verbose_name_plural = "Платежи"
+        ordering = ["way", "date", "course", "lesson"]
