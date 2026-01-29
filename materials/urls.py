@@ -1,4 +1,4 @@
-from materials.apps import MaterialsConfig
+from .apps import MaterialsConfig
 from rest_framework.routers import DefaultRouter
 from django.urls import path
 from .views import *
