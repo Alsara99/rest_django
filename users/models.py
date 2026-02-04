@@ -4,8 +4,10 @@ from materials.models import Course, Lesson
 
 
 class User(AbstractUser):
-    username = None
-
+    username = models.CharField(
+        max_length=150,
+        unique=True,
+    )
     email = models.EmailField(
         unique=True,
         verbose_name="Электронная почта",
@@ -29,7 +31,7 @@ class User(AbstractUser):
     )
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ["username"]
 
 
     def __str__(self):

@@ -1,6 +1,12 @@
 from django.db import models
+from users.models import User
 
 class Course(models.Model):
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="courses"
+    )
     name = models.CharField(
         max_length=50,
         verbose_name="Наименование курса",
@@ -27,6 +33,11 @@ class Course(models.Model):
 
 
 class Lesson(models.Model):
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="lessons"
+    )
     name = models.CharField(
         max_length=50,
         verbose_name="Название урока",
