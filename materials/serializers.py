@@ -10,14 +10,14 @@ class LessonSerializer(serializers.ModelSerializer):
 
 class CourseSerializer(serializers.ModelSerializer):
     lessons = LessonSerializer(many=True)
+    lesson_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
-        fields = ['id', 'name', 'description', 'preview', 'lessons']
+        fields = ['id', 'name', 'description', 'preview', 'lessons', 'lesson_count']
 
-    def create(self, validated_data):
-        lessons_data = validated_data.pop('lessons')
-        course = Course.objects.create(**validated_data)
-        for lesson_data in lessons_data:
-            Lesson.objects.create(course=course, **lesson_data)
-        return course
+    def get_lesson_count(self, obj):
+        if obj.lesson_set.exists():
+            return obj.lesson_set.count()
+        else:
+            return 0
