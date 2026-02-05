@@ -1,15 +1,20 @@
 from django.core.exceptions import PermissionDenied
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
-from .models import Course, Lesson
+from .models import Course, Lesson, Subscription
 from .serializers import CourseSerializer, LessonSerializer
 from users.permission import IsOwnerOrModerator, IsNotModerator
+from .paginators import CoursePagination, LessonPagination
 
 
 class LessonListAPIView(generics.ListAPIView):
     serializer_class = LessonSerializer
+    pagination_class = LessonPagination
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -53,7 +58,9 @@ class LessonDeleteAPIView(generics.DestroyAPIView):
 
 
 class CourseViewSet(ModelViewSet):
+    queryset = Course.objects.all()
     serializer_class = CourseSerializer
+    pagination_class = CoursePagination
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -77,3 +84,31 @@ class CourseViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
+
+class SubscriptionAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        course_id = request.data.get('course_id')
+
+        course = get_object_or_404(Course, id=course_id)
+
+        subs_qs = Subscription.objects.filter(
+            user=user,
+            course=course
+        )
+
+        # Если подписка есть — удаляем
+        if subs_qs.exists():
+            subs_qs.delete()
+            message = 'подписка удалена'
+        # Если подписки нет — создаём
+        else:
+            Subscription.objects.create(
+                user=user,
+                course=course
+            )
+            message = 'подписка добавлена'
+
+        return Response({"message": message})
