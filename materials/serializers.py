@@ -8,6 +8,7 @@ class LessonSerializer(serializers.ModelSerializer):
         model = Lesson
         fields = [
             'id',
+            'owner',
             'name',
             'description',
             'preview',
@@ -28,13 +29,13 @@ class CourseSerializer(serializers.ModelSerializer):
         model = Course
         fields = [
             'id',
+            'owner',
             'name',
             'description',
             'preview',
-            'video_url',
-            'lessons',
             'lesson_count',
             'is_subscribed',
+            'lessons',
         ]
         validators = [
             YouTubeOnlyValidator(field='video_url')

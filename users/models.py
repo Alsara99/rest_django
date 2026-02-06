@@ -33,10 +33,8 @@ class User(AbstractUser):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
 
-
     def __str__(self):
         return self.email
-
 
     class Meta:
         verbose_name = "Пользователь"
@@ -60,7 +58,6 @@ class Payment(models.Model):
     )
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
-
 
     class Meta:
         verbose_name = "Платеж"

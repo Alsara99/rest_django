@@ -15,10 +15,32 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Course',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(help_text='Укажите наименование курса', max_length=50, verbose_name='Наименование курса')),
-                ('description', models.TextField(help_text='Укажите описание курса', verbose_name='Описание курса')),
-                ('preview', models.ImageField(blank=True, help_text='Укажите превью курса', null=True, upload_to='materials/previews', verbose_name='Превью курса')),
+                ('id', models.BigAutoField(
+                    auto_created=True,
+                    primary_key=True,
+                    serialize=False,
+                    verbose_name='ID'
+                )
+                 ),
+                ('name', models.CharField(
+                    help_text='Укажите наименование курса',
+                    max_length=50,
+                    verbose_name='Наименование курса'
+                )
+                 ),
+                ('description', models.TextField(
+                    help_text='Укажите описание курса',
+                    verbose_name='Описание курса'
+                )
+                 ),
+                ('preview', models.ImageField(
+                    blank=True,
+                    help_text='Укажите превью курса',
+                    null=True,
+                    upload_to='materials/previews',
+                    verbose_name='Превью курса'
+                )
+                 ),
             ],
             options={
                 'verbose_name': 'Курс',
@@ -29,12 +51,42 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Lesson',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(help_text='Укажите название урока', max_length=50, verbose_name='Название урока')),
-                ('description', models.TextField(help_text='Укажите описание урока', verbose_name='Описание урока')),
-                ('preview', models.ImageField(blank=True, help_text='Укажите превью урока', null=True, upload_to='materials/previews', verbose_name='Превью урока')),
-                ('video_link', models.URLField(help_text='Укажите ссылку на видео', verbose_name='Ссылка на видео')),
-                ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='materials.course')),
+                ('id', models.BigAutoField(
+                    auto_created=True,
+                    primary_key=True,
+                    serialize=False,
+                    verbose_name='ID'
+                )
+                 ),
+                ('name', models.CharField(
+                    help_text='Укажите название урока',
+                    max_length=50,
+                    verbose_name='Название урока'
+                )
+                 ),
+                ('description', models.TextField(
+                    help_text='Укажите описание урока',
+                    verbose_name='Описание урока'
+                )
+                 ),
+                ('preview', models.ImageField(
+                    blank=True,
+                    help_text='Укажите превью урока',
+                    null=True,
+                    upload_to='materials/previews',
+                    verbose_name='Превью урока'
+                )
+                 ),
+                ('video_link', models.URLField(
+                    help_text='Укажите ссылку на видео',
+                    verbose_name='Ссылка на видео'
+                )
+                 ),
+                ('course', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to='materials.course'
+                )
+                 ),
             ],
             options={
                 'verbose_name': 'Курс',

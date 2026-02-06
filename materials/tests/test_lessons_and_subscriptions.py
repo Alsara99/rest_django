@@ -37,7 +37,6 @@ class LessonAndSubscriptionTestCase(APITestCase):
             owner=self.owner
         )
 
-
     def test_lesson_list_authenticated_user(self):
         self.client.force_authenticate(user=self.other_user)
 
@@ -99,7 +98,6 @@ class LessonAndSubscriptionTestCase(APITestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
 
     def test_subscribe_course(self):
         self.client.force_authenticate(user=self.other_user)
