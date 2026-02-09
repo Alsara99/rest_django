@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.conf import settings
 from materials.models import Course, Lesson
 
 
@@ -44,22 +45,18 @@ class User(AbstractUser):
 
 class Payment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    date = models.DateField(
-        verbose_name="Дата",
-        help_text="Укажите дату"
+    course = models.ForeignKey(
+        Course, on_delete=models.SET_NULL, null=True, blank=True
     )
-    way = models.TextField(
-        verbose_name="Способ оплаты",
-        help_text="Укажите способ оплаты"
+    lesson = models.ForeignKey(
+        Lesson, on_delete=models.SET_NULL, null=True, blank=True
     )
-    summ = models.IntegerField(
-        verbose_name="Сумма",
-        help_text="Укажите сумму"
-    )
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
 
-    class Meta:
-        verbose_name = "Платеж"
-        verbose_name_plural = "Платежи"
-        ordering = ["way", "date", "course", "lesson"]
+    amount = models.PositiveIntegerField()
+    date = models.DateTimeField(auto_now_add=True)
+
+    stripe_product_id = models.CharField(max_length=255, blank=True, null=True)
+    stripe_price_id = models.CharField(max_length=255, blank=True, null=True)
+    stripe_session_url = models.URLField(blank=True, null=True)
+
+    way = models.CharField(max_length=50, default="stripe")
