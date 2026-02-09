@@ -10,6 +10,7 @@ from .models import Course, Lesson, Subscription
 from .serializers import CourseSerializer, LessonSerializer
 from users.permission import IsOwnerOrModerator, IsNotModerator
 from .paginators import CoursePagination, LessonPagination
+from.tasks import send_course_update_email
 
 
 class LessonListAPIView(generics.ListAPIView):
@@ -83,6 +84,19 @@ class CourseViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+    def perform_update(self, serializer):
+        course = serializer.save()
+
+        subscriptions = Subscription.objects.filter(course=course)
+        emails = [
+            sub.user.email
+            for sub in subscriptions
+            if sub.user.email
+        ]
+
+        if emails:
+            send_course_update_email.delay(emails, course.title)
 
 
 class SubscriptionAPIView(APIView):
