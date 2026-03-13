@@ -1,6 +1,13 @@
 from django.db import models
+from django.conf import settings
+
 
 class Course(models.Model):
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="courses"
+    )
     name = models.CharField(
         max_length=50,
         verbose_name="Наименование курса",
@@ -27,6 +34,11 @@ class Course(models.Model):
 
 
 class Lesson(models.Model):
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="lessons"
+    )
     name = models.CharField(
         max_length=50,
         verbose_name="Название урока",
@@ -55,3 +67,25 @@ class Lesson(models.Model):
         verbose_name = "Курс"
         verbose_name_plural = "Курсы"
         ordering = ["name"]
+
+
+class Subscription(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='subscriptions'
+    )
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.CASCADE,
+        related_name='subscriptions'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'course')
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+
+    def __str__(self):
+        return f'{self.user} → {self.course}'
