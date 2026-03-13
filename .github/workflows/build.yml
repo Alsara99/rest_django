@@ -1,0 +1,53 @@
+name: build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted
+
+    steps:
+
+      - name: Force cleanup Python cache and fix permissions
+        run: |
+          sudo rm -rf __pycache__ || true
+          sudo chown -R $(whoami):$(whoami) .
+
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Debug user and permissions
+        run: |
+          echo "==== Debug Info ===="
+          whoami
+          id
+          groups
+          ls -l /var/run/docker.sock
+          docker ps || echo "Docker access failed"
+          docker compose version || echo "Compose failed"
+
+      - name: Create .env from secret
+        run: |
+          echo "==== Generating .env ===="
+          cat << 'EOF' > .env
+          ${{ secrets.DOTENV }}
+          EOF
+          ls -la .env
+
+      - name: Build & Up Docker Compose
+        run: |
+          echo "==== Docker Compose Build & Up ===="
+          docker compose down --remove-orphans
+          docker compose build --no-cache
+          docker compose --env-file .env -f docker-compose.yml up -d
+          docker compose ps
+
+      - name: Cleanup old Docker data
+        if: always()
+        run: |
+          echo "==== Cleaning up unused Docker images and cache ===="
+          docker image prune -f
+    
