@@ -39,34 +39,20 @@ jobs:
   deploy:
     name: Deploy to Server
     runs-on: self-hosted
-    needs: test   # ДЕПЛОЙ ТОЛЬКО ПОСЛЕ ТЕСТОВ
+    needs: test
+
+    env:
+      DOTENV: ${{ secrets.DOTENV }}
 
     steps:
-
-      - name: Force cleanup Python cache and fix permissions
-        run: |
-          sudo rm -rf __pycache__ || true
-          sudo chown -R $(whoami):$(whoami) .
 
       - name: Checkout repository
         uses: actions/checkout@v5
 
-      - name: Debug user and permissions
-        run: |
-          echo "==== Debug Info ===="
-          whoami
-          id
-          groups
-          ls -l /var/run/docker.sock
-          docker ps || echo "Docker access failed"
-          docker compose version || echo "Compose failed"
-
       - name: Create .env from secret
         run: |
           echo "==== Generating .env ===="
-          cat << 'EOF' > .env
-          ${{ secrets.DOTENV }}
-          EOF
+          echo "$DOTENV" > .env
           ls -la .env
 
       - name: Build & Up Docker Compose
@@ -80,5 +66,4 @@ jobs:
       - name: Cleanup old Docker data
         if: always()
         run: |
-          echo "==== Cleaning up unused Docker images and cache ===="
           docker image prune -f
