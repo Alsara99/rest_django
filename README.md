@@ -187,7 +187,7 @@ cp .env.example .env
 Собрать образы и запустить контейнеры:
 
 ```bash
-docker-compose -f docker-compose.yaml up -d --build
+docker-compose -f docker-compose.yml up -d --build
 ```
 
 или
