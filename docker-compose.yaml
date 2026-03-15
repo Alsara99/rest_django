@@ -41,30 +41,26 @@ services:
 
   celery:
     build: .
-    command: celery -A ${DJANGO_CELERY_APP} worker --loglevel=info
+    command: celery -A config worker -l info -P solo
     env_file:
       - .env
     depends_on:
       db:
         condition: service_healthy
       redis:
-        condition: service_started
-      backend:
         condition: service_started
     volumes:
       - .:/app
 
   celery-beat:
     build: .
-    command: celery -A ${DJANGO_CELERY_APP} beat --loglevel=info
+    command: celery -A config beat --loglevel=info
     env_file:
       - .env
     depends_on:
       db:
         condition: service_healthy
       redis:
-        condition: service_started
-      backend:
         condition: service_started
     volumes:
       - .:/app
