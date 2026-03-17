@@ -31,6 +31,9 @@ jobs:
       env:
         SECRET_KEY: ${{ secrets.SECRET_KEY }}
         CI: true
+        DB_NAME: test_db
+        DB_USER: test_user
+        DB_PASSWORD: test_password
 
   build-and-deploy:
     runs-on: self-hosted
